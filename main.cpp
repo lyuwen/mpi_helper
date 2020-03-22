@@ -95,8 +95,6 @@ int main( int argc, char *argv[] )
       return 1;
     }
 
-    int np = NUM_SPAWNS;
-    int errcodes[NUM_SPAWNS];
     MPI_Comm parentcomm, intercomm;
 
     MPI_Init( &argc, &argv );
@@ -269,6 +267,8 @@ int main( int argc, char *argv[] )
     }
     // Run job
     int jobs_per_rank;
+    int errcodes[njobs];
+    size_t argcs;
     if (njobs % world_size != 0){
       jobs_per_rank = njobs / world_size + 1;
     } else {
@@ -286,7 +286,15 @@ int main( int argc, char *argv[] )
       {
         printf("[Rank %d] executing job %d.\n", world_rank, jobid);
         // Split argv
-        // MPI_Comm_spawn( argv[0], MPI_ARGV_NULL, np, MPI_INFO_NULL, 0, MPI_COMM_WORLD, &intercomm, errcodes );
+        char **mpiargv;
+        chdir(wdirs[i]);
+        // if (argvs_len[i])
+        // {
+        //   MPI_Comm_spawn( execs[i], str_split(argvs[i], ' ', argcs), ncores[i], MPI_INFO_NULL, 0, MPI_COMM_WORLD, &intercomm, errcodes );
+        // } else {
+          MPI_Comm_spawn( execs[i], MPI_ARGV_NULL, ncores[i], MPI_INFO_NULL, 0, MPI_COMM_WORLD, &intercomm, errcodes );
+        // }
+        chdir(cwd);
       } else {
         printf("[Rank %d] Job %d does not exist, idling.\n", world_rank, jobid);
       }
@@ -294,7 +302,7 @@ int main( int argc, char *argv[] )
     // MPI_Barrier(MPI_COMM_WORLD);
     //
     fflush(stdout);
-    if ((parentcomm == MPI_COMM_NULL) && (world_rank == 0))
+    if (parentcomm == MPI_COMM_NULL)
     {
       free(ncores);
       for (int i = 0; i < njobs; i++)

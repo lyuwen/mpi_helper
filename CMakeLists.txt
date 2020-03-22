@@ -13,6 +13,9 @@ target_link_libraries(mpi_help ${MPI_CXX_LIBRARIES})
 
 enable_testing()
 add_test(NAME test_mpi
-  COMMAND mpirun --oversubscribe -n 2 ./mpi_help -v ${CMAKE_CURRENT_SOURCE_DIR}/test_input)
+  COMMAND mpirun --oversubscribe -n 1 ./mpi_help -v ${CMAKE_CURRENT_SOURCE_DIR}/test_input)
 set_tests_properties(test_mpi PROPERTIES
   ENVIRONMENT PMIX_MCA_gds=^ds12)
+
+add_executable(test.x test.cpp)
+target_link_libraries(test.x ${MPI_CXX_LIBRARIES})
