@@ -1,10 +1,17 @@
 #include "mpi.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
 int main( int argc, char *argv[] )
 {
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+      perror("Error getting current working directory.");
+      return 1;
+    }
+
     MPI_Comm parentcomm, intercomm;
 
     MPI_Init( &argc, &argv );
@@ -24,14 +31,21 @@ int main( int argc, char *argv[] )
     MPI_Get_processor_name(processor_name, &name_len);
 
 
-    if (parentcomm == MPI_COMM_NULL)
-    {
+    // if (parentcomm == MPI_COMM_NULL)
+    // {
         printf("Parent process from processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
-    }
-    else
+        printf("CWD: %s\n", cwd);
+    // }
+    // else
+    // {
+    //     printf("Spawned process from processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+    // }
+    //
+    for (int i = 1; i < argc; i++)
     {
-        printf("Spawned process from processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+      printf("input %d: %s\n", i, argv[i]);
     }
+    sleep(5);
 
     MPI_Finalize();
     return 0;
