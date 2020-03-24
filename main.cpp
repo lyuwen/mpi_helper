@@ -288,14 +288,15 @@ int main( int argc, char *argv[] )
         // Split argv
         char **mpiargv;
         MPI_Info info;
-        MPI_Info_create( &info );
-        MPI_Info_set( info, "wdir", wdirs[jobid] );
+        MPI_Info_create(&info);
+        MPI_Info_set(info, "wdir", wdirs[jobid]);
         // if (argvs_len[jobid])
         // {
-        //   MPI_Comm_spawn( execs[jobid], str_split(argvs[jobid], ' ', argcs), ncores[jobid], info, 0, MPI_COMM_SELF, &intercomm, errcodes );
+        //   MPI_Comm_spawn(execs[jobid], str_split(argvs[jobid], ' ', argcs), ncores[jobid], info, 0, MPI_COMM_SELF, &intercomm, errcodes);
         // } else {
-          MPI_Comm_spawn( execs[jobid], MPI_ARGV_NULL, ncores[jobid], info, 0, MPI_COMM_SELF, &intercomm, errcodes );
+          MPI_Comm_spawn(execs[jobid], MPI_ARGV_NULL, ncores[jobid], info, 0, MPI_COMM_SELF, &intercomm, errcodes);
         // }
+        MPI_Info_free(&info);
       } else {
         printf("[Rank %d] Job %d does not exist, idling.\n", world_rank, jobid);
       }

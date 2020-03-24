@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
     {
       printf("input %d: %s\n", i, argv[i]);
     }
-    sleep(5);
+    // sleep(5);
 
     MPI_Finalize();
     return 0;
